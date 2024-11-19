@@ -1,0 +1,23 @@
+#
+# Copyright 2024 Silicon Laboratories
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+config HCI_SILABS_ENABLE_SCAN
+	bool "BLE Controller scanning support"
+	default y
+	help
+	  If enabled, The controller supports scanning. Disabling this feature will help
+	  on saving flash if application does not need advertisement scanning.
+config HCI_SILABS_ENABLE_ADV
+	bool "BLE Controller advertisement support"
+	default y
+	help
+	  If enabled, The controller supports sending advertisements. Disabling this feature will help
+	  on saving flash if application does not need advertisements.
+config HCI_SILABS_ENABLE_CONN
+	bool "BLE Controller connection support"
+	default y
+	help
+	  If enabled, The controller supports connections. Disabling this feature will help
+	  on saving flash if application does not need advertisements.

@@ -186,12 +186,20 @@ static int slz_bt_open(const struct device *dev, bt_hci_recv_t recv)
 		goto deinit;
 	}
 
+#if CONFIG_HCI_SILABS_ENABLE_ADV
 	sl_btctrl_init_adv();
+#endif
+#if CONFIG_HCI_SILABS_ENABLE_SCAN
 	sl_btctrl_init_scan();
+#endif
+#if CONFIG_HCI_SILABS_ENABLE_CONN
 	sl_btctrl_init_conn();
+#endif
 	sl_btctrl_init_phy();
+#if defined(CONFIG_BT_EXT_ADV)
 	sl_btctrl_init_adv_ext();
 	sl_btctrl_init_scan_ext();
+#endif
 
 	ret = sl_btctrl_init_basic(SL_BT_CONFIG_MAX_CONNECTIONS,
 			SL_BT_CONFIG_USER_ADVERTISERS,
@@ -207,8 +215,12 @@ static int slz_bt_open(const struct device *dev, bt_hci_recv_t recv)
 
 	sl_bthci_init_upper();
 	sl_btctrl_hci_parser_init_default();
+#if CONFIG_HCI_SILABS_ENABLE_CONN
 	sl_btctrl_hci_parser_init_conn();
+#endif
+#if CONFIG_HCI_SILABS_ENABLE_ADV
 	sl_btctrl_hci_parser_init_adv();
+#endif
 	sl_btctrl_hci_parser_init_phy();
 
 #ifdef CONFIG_PM
