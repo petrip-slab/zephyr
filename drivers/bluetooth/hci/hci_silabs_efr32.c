@@ -247,6 +247,12 @@ deinit:
 	return ret;
 }
 
+static int slz_bt_close(const struct device *)
+{
+	sli_btctrl_deinit_mem();
+	return 0;
+} 
+
 bool sli_pending_btctrl_events(void)
 {
 	return false; /* TODO: check if this should really return false! */
@@ -267,6 +273,7 @@ void sl_bt_controller_init(void)
 static const struct bt_hci_driver_api drv = {
 	.open           = slz_bt_open,
 	.send           = slz_bt_send,
+	.close          = slz_bt_close
 };
 
 #define HCI_DEVICE_INIT(inst) \
