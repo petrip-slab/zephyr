@@ -1,0 +1,42 @@
+config BT_SILABS_EFR32_BUFFER_MEMORY
+	int "Silicon Labs Bluetooth Library memory buffer size"
+	depends on BT_SILABS_EFR32
+	default 6144
+	help
+	  Select the size of allocated memory buffer for the Silicon Labs
+	  Bluetooth Library.
+
+config BT_SILABS_EFR32_USER_ADVERTISERS
+	int "Silicon Labs Bluetooth Library user advertisement sets"
+	depends on BT_SILABS_EFR32
+	default 0
+	help
+	  Amount of advertisement sets reserved for application.
+
+config BT_SILABS_EFR32_ACCEPT_LIST_SIZE
+	int "Silicon Labs Bluetooth Library accept list size"
+	depends on BT_SILABS_EFR32
+	default 1
+	help
+	  Accept list size.
+
+config BT_SILABS_EFR32_COMPLETED_PACKETS_THRESHOLD
+	int "Silicon Labs Bluetooth Library completed packet reporting threshold"
+	depends on BT_SILABS_EFR32
+	default 1
+	help
+	   Completed packet reporting threshold value.
+
+config BT_SILABS_EFR32_COMPLETED_PACKETS_TIMEOUT
+	int "Silicon Labs Bluetooth Library completed packet report event timeout"
+	depends on BT_SILABS_EFR32
+	default 3
+	help
+	  completed packet report event timeout.
+
+config BT_SILABS_EFR32_ACCEPT_LINK_LAYER_STACK_SIZE
+	int "Silicon Labs Bluetooth Library link layer stack size"
+	depends on BT_SILABS_EFR32
+	default 1024
+	help
+	  Link layer stack size.
