@@ -179,8 +179,8 @@ static int slz_bt_open(const struct device *dev, bt_hci_recv_t recv)
 
 	sl_btctrl_configure_le_buffer_size(CONFIG_BT_BUF_ACL_TX_COUNT);
 
-	if (IS_ENABLED(BT_PRIVACY)) {
-		sl_btctrl_allocate_resolving_list_memory(BT_CTLR_RL_SIZE);
+	if (IS_ENABLED(CONFIG_BT_PRIVACY)) {
+		sl_btctrl_allocate_resolving_list_memory(CONFIG_BT_CTLR_RL_SIZE);
 		sl_btctrl_init_privacy();
 	}
 
@@ -245,11 +245,11 @@ static int slz_bt_open(const struct device *dev, bt_hci_recv_t recv)
 		}
 	}
 
-	if (IS_ENABLED(BT_PRIVACY)) {
+	if (IS_ENABLED(CONFIG_BT_PRIVACY)) {
 		sl_btctrl_hci_parser_init_privacy();
 	}
 
-	if (IS_ENABLED(BT_CTLR_DTM)) {
+	if (IS_ENABLED(CONFIG_BT_CTLR_DTM)) {
 		test_protocol_init();
 	}
 
