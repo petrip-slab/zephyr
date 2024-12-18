@@ -179,7 +179,7 @@ static int slz_bt_open(const struct device *dev, bt_hci_recv_t recv)
 
 	sl_btctrl_configure_le_buffer_size(CONFIG_BT_BUF_ACL_TX_COUNT);
 
-	if (IS_ENABLED(CONFIG_BT_PRIVACY)) {
+	if (IS_ENABLED(CONFIG_BT_CTLR_PRIVACY)) {
 		sl_btctrl_allocate_resolving_list_memory(CONFIG_BT_CTLR_RL_SIZE);
 		sl_btctrl_init_privacy();
 	}
