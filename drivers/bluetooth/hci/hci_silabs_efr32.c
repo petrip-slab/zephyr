@@ -194,8 +194,11 @@ static int slz_bt_open(const struct device *dev, bt_hci_recv_t recv)
 	}
 	if (IS_ENABLED(CONFIG_BT_CONN)) {
 		sl_btctrl_init_conn();
+		sl_btctrl_configure_completed_packets_reporting(
+			SL_BT_CONTROLLER_COMPLETED_PACKETS_THRESHOLD,
+			SL_BT_CONTROLLER_COMPLETED_PACKETS_EVENTS_TIMEOUT);
+		sl_btctrl_init_phy();
 	}
-	sl_btctrl_init_phy();
 
 	if (IS_ENABLED(CONFIG_BT_EXT_ADV)) {
 		if (IS_ENABLED(CONFIG_BT_BROADCASTER) || IS_ENABLED(CONFIG_BT_PERIPHERAL)) {
@@ -214,9 +217,6 @@ static int slz_bt_open(const struct device *dev, bt_hci_recv_t recv)
 		goto deinit;
 	}
 
-	sl_btctrl_configure_completed_packets_reporting(
-		SL_BT_CONTROLLER_COMPLETED_PACKETS_THRESHOLD,
-		SL_BT_CONTROLLER_COMPLETED_PACKETS_EVENTS_TIMEOUT);
 
 	sl_bthci_init_upper();
 	sl_btctrl_hci_parser_init_default();
