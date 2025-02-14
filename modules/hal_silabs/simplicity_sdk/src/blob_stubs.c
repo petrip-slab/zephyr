@@ -36,85 +36,12 @@ int16_t BTLE_LL_SetMaxPower(int16_t power)
 	return 0;
 }
 
-void sl_btctrl_disable_2m_phy(void)
+sl_status_t sl_btctrl_init(void)
 {
+	return SL_STATUS_OK;
 }
 
-void sl_btctrl_disable_coded_phy(void)
-{
-}
-
-uint32_t sl_btctrl_init_mem(uint32_t memsize)
-{
-	return 0;
-}
-
-void sl_btctrl_configure_le_buffer_size(uint8_t count)
-{
-}
-
-sl_status_t sl_btctrl_init_ll(void)
-{
-	return SL_STATUS_NOT_AVAILABLE;
-}
-
-void sli_btctrl_deinit_mem(void)
-{
-}
-
-void sl_btctrl_init_adv(void)
-{
-}
-
-void sl_btctrl_init_adv_ext(void)
-{
-}
-
-void sl_btctrl_init_scan(void)
-{
-}
-
-void sl_btctrl_init_scan_ext(void)
-{
-}
-
-void sl_btctrl_init_conn(void)
-{
-}
-
-void sl_btctrl_init_phy(void)
-{
-}
-
-void sl_btctrl_init_basic(void)
-{
-}
-
-void sl_btctrl_configure_completed_packets_reporting(uint8_t packets, uint8_t events)
-{
-}
-
-void sl_bthci_init_upper(void)
-{
-}
-
-void sl_btctrl_hci_parser_init_default(void)
-{
-}
-
-void sl_btctrl_hci_parser_init_conn(void)
-{
-}
-
-void sl_btctrl_hci_parser_init_adv(void)
-{
-}
-
-void sl_btctrl_hci_parser_init_phy(void)
-{
-}
-
-void sl_bthci_init_vs(void)
+void sl_btctrl_deinit(void)
 {
 }
 
