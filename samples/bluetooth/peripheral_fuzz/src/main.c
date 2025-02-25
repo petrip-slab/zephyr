@@ -113,7 +113,7 @@ static struct bt_conn_auth_cb auth_cb = {.cancel = auth_cancel,
 					 .pairing_confirm = confirm_pairing,
 					 .passkey_display = auth_passkey_display};
 
-static char custom_value[512] = "Initial value";
+static char custom_value[128] = "Initial value";
 
 
 static ssize_t read_custom(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, uint16_t len, uint16_t offset)
