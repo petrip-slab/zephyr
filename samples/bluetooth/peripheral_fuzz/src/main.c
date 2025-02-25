@@ -115,6 +115,7 @@ static struct bt_conn_auth_cb auth_cb = {.cancel = auth_cancel,
 
 static char custom_value[512] = "Initial value";
 
+
 static ssize_t read_custom(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, uint16_t len, uint16_t offset)
 {
     const char *value = attr->user_data;
@@ -137,13 +138,25 @@ static ssize_t write_custom(struct bt_conn *conn, const struct bt_gatt_attr *att
     return len;
 }
 
-BT_GATT_SERVICE_DEFINE(mega_service,
-    BT_GATT_PRIMARY_SERVICE(BT_UUID_DECLARE_16(0x1800)),
-    BT_GATT_CHARACTERISTIC(BT_UUID_DECLARE_16(0x1b00),
-                           BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE |  BT_GATT_CHRC_INDICATE | BT_GATT_CHRC_NOTIFY,
-                           BT_GATT_PERM_READ | BT_GATT_PERM_WRITE,
-                           read_custom, write_custom, custom_value),
-);
+
+static struct bt_gatt_attr fuzz_attrs[] = {
+	BT_GATT_PRIMARY_SERVICE(BT_UUID_DECLARE_16(0x1bff)),
+	BT_GATT_CHARACTERISTIC(BT_UUID_DECLARE_16(0x1b00),
+			       BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE | BT_GATT_CHRC_INDICATE |
+				       BT_GATT_CHRC_NOTIFY,
+			       BT_GATT_PERM_READ | BT_GATT_PERM_WRITE, read_custom, write_custom,
+			       custom_value),
+};
+
+static struct bt_gatt_service fuzz_service = BT_GATT_SERVICE(fuzz_attrs);
+
+// Service Inclusion (UUID 0x2802)
+static struct bt_gatt_attr service_inclusion_attr[] = {
+	BT_GATT_PRIMARY_SERVICE(BT_UUID_DECLARE_16(0x2802)),
+    BT_GATT_INCLUDE_SERVICE((void *)&fuzz_service)
+};
+
+static struct bt_gatt_service service_inclusion_service = BT_GATT_SERVICE(service_inclusion_attr);
 
 static void bt_ready(int err)
 {
@@ -183,7 +196,9 @@ int main(void)
 	bt_addr_le_to_str(&addr, addr_str, sizeof(addr_str));
 	printk("Addr : %s\n", addr_str);
 	k_msleep(100);
-
+	bt_gatt_service_register(&fuzz_service);
+	bt_gatt_service_register(&service_inclusion_service);
+	
 	bt_gatt_foreach_attr(0x0001, 0xffff, print_attr, NULL);
 
 	bt_conn_auth_cb_register(&auth_cb);
