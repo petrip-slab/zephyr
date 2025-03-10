@@ -56,20 +56,36 @@ int16_t BTLE_LL_SetMaxPower(int16_t power);
 bool sli_pending_btctrl_events(void);
 RAIL_Handle_t BTLE_LL_GetRadioHandle(void);
 
+#define RADIO_PRIORITY (0) /* Highest possible priority for now */
+
 void rail_isr_installer(void)
 {
-#ifdef CONFIG_SOC_SERIES_EFR32MG24
-	IRQ_CONNECT(SYNTH_IRQn, 0, SYNTH_IRQHandler, NULL, 0);
-#else
-	IRQ_CONNECT(RDMAILBOX_IRQn, 0, RDMAILBOX_IRQHandler, NULL, 0);
-#endif
-	IRQ_CONNECT(RAC_SEQ_IRQn, 0, RAC_SEQ_IRQHandler, NULL, 0);
-	IRQ_CONNECT(RAC_RSM_IRQn, 0, RAC_RSM_IRQHandler, NULL, 0);
-	IRQ_CONNECT(PROTIMER_IRQn, 0, PROTIMER_IRQHandler, NULL, 0);
-	IRQ_CONNECT(MODEM_IRQn, 0, MODEM_IRQHandler, NULL, 0);
-	IRQ_CONNECT(FRC_IRQn, 0, FRC_IRQHandler, NULL, 0);
-	IRQ_CONNECT(BUFC_IRQn, 0, BUFC_IRQHandler, NULL, 0);
-	IRQ_CONNECT(AGC_IRQn, 0, AGC_IRQHandler, NULL, 0);
+	IRQ_CONNECT(AGC_IRQn, RADIO_PRIORITY, AGC_IRQHandler, NULL, 0);
+	IRQ_CONNECT(BUFC_IRQn, RADIO_PRIORITY, BUFC_IRQHandler, NULL, 0);
+	IRQ_CONNECT(FRC_PRI_IRQn, RADIO_PRIORITY, FRC_PRI_IRQHandler, NULL, 0);
+	IRQ_CONNECT(FRC_IRQn, RADIO_PRIORITY, FRC_IRQHandler, NULL, 0);
+	IRQ_CONNECT(MODEM_IRQn, RADIO_PRIORITY, MODEM_IRQHandler, NULL, 0);
+	IRQ_CONNECT(PROTIMER_IRQn, RADIO_PRIORITY, PROTIMER_IRQHandler, NULL, 0);
+	IRQ_CONNECT(RAC_RSM_IRQn, RADIO_PRIORITY, RAC_RSM_IRQHandler, NULL, 0);
+	IRQ_CONNECT(RAC_SEQ_IRQn, RADIO_PRIORITY, RAC_SEQ_IRQHandler, NULL, 0);
+	IRQ_CONNECT(SYNTH_IRQn, RADIO_PRIORITY, SYNTH_IRQHandler, NULL, 0);
+
+	/* Depending on the chip family, either HOSTMAILBOX, RDMAILBOX or neither
+	 * is present. If they are present, they must have the same priority as
+	 * the other radio interrupts.
+	 */
+	IF_ENABLED(DT_IRQ_HAS_NAME(DT_NODELABEL(radio), hostmailbox), ({
+		IRQ_CONNECT(DT_IRQ_BY_NAME(DT_NODELABEL(radio), hostmailbox, irq),
+			    RADIO_PRIORITY,
+			    HOSTMAILBOX_IRQHandler,
+			    NULL, 0);
+	}));
+	IF_ENABLED(DT_IRQ_HAS_NAME(DT_NODELABEL(radio), rdmailbox), ({
+		IRQ_CONNECT(DT_IRQ_BY_NAME(DT_NODELABEL(radio), rdmailbox, irq),
+			    RADIO_PRIORITY,
+			    RDMAILBOX_IRQHandler,
+			    NULL, 0);
+	}));
 }
 
 static bool slz_is_evt_discardable(const struct bt_hci_evt_hdr *hdr, const uint8_t *params,
@@ -290,7 +306,6 @@ static int slz_bt_open(const struct device *dev, bt_hci_recv_t recv)
 			slz_rx_thread_func, (void *)dev, NULL, NULL,
 			K_PRIO_COOP(CONFIG_BT_DRIVER_RX_HIGH_PRIO), 0, K_NO_WAIT);
 
-	rail_isr_installer();
 	sl_rail_util_pa_init();
 
 	/* Initialize Controller features based on Kconfig values */
@@ -314,6 +329,10 @@ static int slz_bt_open(const struct device *dev, bt_hci_recv_t recv)
 			goto deinit;
 		}
 	}
+
+	/* Set up interrupts after Controller init, because it will overwrite them. */
+	/* TODO: after the Controller ISR setup is configurable, set them there correctly. */
+	rail_isr_installer();
 
 	hci->recv = recv;
 
