@@ -30,7 +30,7 @@
 		msc: flash-controller@400e0000 {
 			compatible = "silabs,gecko-flash-controller";
 			reg = <0x400e0000 0x104>;
-			interrupts = <25 0>;
+			interrupts = <25 2>;
 
 			#address-cells = <1>;
 			#size-cells = <1>;
@@ -45,7 +45,7 @@
 		usart0: usart@40010000 { /* USART0 */
 			compatible = "silabs,gecko-usart";
 			reg = <0x40010000 0x400>;
-			interrupts = <12 0>, <13 0>;
+			interrupts = <12 2>, <13 2>;
 			interrupt-names = "rx", "tx";
 			peripheral-id = <0>;
 			status = "disabled";
@@ -54,7 +54,7 @@
 		usart1: usart@40010400 { /* USART1 */
 			compatible = "silabs,gecko-usart";
 			reg = <0x40010400 0x400>;
-			interrupts = <20 0>, <21 0>;
+			interrupts = <20 2>, <21 2>;
 			interrupt-names = "rx", "tx";
 			peripheral-id = <1>;
 			status = "disabled";
@@ -63,7 +63,7 @@
 		usart2: usart@40010800 { /* USART2 */
 			compatible = "silabs,gecko-usart";
 			reg = <0x40010800 0x400>;
-			interrupts = <40 0>, <41 0>;
+			interrupts = <40 2>, <41 2>;
 			interrupt-names = "rx", "tx";
 			peripheral-id = <2>;
 			status = "disabled";
@@ -72,7 +72,7 @@
 		usart3: usart@40010c00 { /* USART3 */
 			compatible = "silabs,gecko-usart";
 			reg = <0x40010c00 0x400>;
-			interrupts = <43 0>, <44 0>;
+			interrupts = <43 2>, <44 2>;
 			interrupt-names = "rx", "tx";
 			peripheral-id = <3>;
 			status = "disabled";
@@ -81,7 +81,7 @@
 		leuart0: leuart@4004a000 { /* LEUART0 */
 			compatible = "silabs,gecko-leuart";
 			reg = <0x4004a000 0x400>;
-			interrupts = <22 0>;
+			interrupts = <22 2>;
 			peripheral-id = <0>;
 			status = "disabled";
 		};
@@ -92,7 +92,7 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reg = <0x4000c000 0x400>;
-			interrupts = <17 0>;
+			interrupts = <17 2>;
 			status = "disabled";
 		};
 
@@ -102,14 +102,14 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reg = <0x4000c400 0x400>;
-			interrupts = <42 0>;
+			interrupts = <42 2>;
 			status = "disabled";
 		};
 
 		rtcc0: rtcc@40042000 {
 			compatible = "silabs,gecko-rtcc";
 			reg = <0x40042000 0x184>;
-			interrupts = <30 0>;
+			interrupts = <30 2>;
 			clock-frequency = <32768>;
 			prescaler = <1>;
 			status = "disabled";
@@ -202,7 +202,7 @@
 			compatible = "silabs,gecko-wdog";
 			reg = <0x40052000 0x2C>;
 			peripheral-id = <0>;
-			interrupts = <2 0>;
+			interrupts = <2 2>;
 			status = "disabled";
 		};
 
@@ -210,7 +210,7 @@
 			compatible = "silabs,gecko-wdog";
 			reg = <0x40052400 0x2C>;
 			peripheral-id = <1>;
-			interrupts = <3 0>;
+			interrupts = <3 2>;
 			status = "disabled";
 		};
 
@@ -229,7 +229,7 @@
 		trng0: trng@4001d000 {
 			compatible = "silabs,gecko-trng";
 			reg = <0x4001d000 0x400>;
-			interrupts = <49 0>;
+			interrupts = <49 2>;
 			status = "disabled";
 		};
 	};
