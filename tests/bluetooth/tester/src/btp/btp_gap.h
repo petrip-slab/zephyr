@@ -135,6 +135,12 @@ struct btp_gap_stop_advertising_rp {
 #define BTP_GAP_DISCOVERY_FLAG_LE_OBSERVE	0x10
 #define BTP_GAP_DISCOVERY_FLAG_OWN_ID_ADDR	0x20
 
+#define BTP_GAP_SET_DISCOVERY_PARAMS 0x2b
+struct btp_gap_set_discovery_params_cmd {
+	uint16_t interval;
+	uint16_t window;
+} __packed;
+
 #define BTP_GAP_START_DISCOVERY			0x0c
 struct btp_gap_start_discovery_cmd {
 	uint8_t flags;

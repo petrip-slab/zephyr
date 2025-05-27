@@ -1188,6 +1188,27 @@ static uint8_t br_start_discovery(const struct btp_gap_start_discovery_cmd *cp)
 }
 #endif /* CONFIG_BT_CLASSIC */
 
+/* Setting defaults to what they were originally */
+static struct bt_le_scan_param le_scan_param = {
+	.type = BT_LE_SCAN_TYPE_PASSIVE,
+	.interval = BT_GAP_SCAN_FAST_INTERVAL,
+	.window = BT_GAP_SCAN_FAST_WINDOW,
+	.options = 0,
+};
+
+static uint8_t set_discovery_params(const void *cmd, uint16_t cmd_len, void *rsp, uint16_t *rsp_len)
+{
+	const struct btp_gap_set_discovery_params_cmd *cp = cmd;
+
+	if (cp->interval < 4 || cp->window < 4 || cp->window > cp->interval) {
+		LOG_ERR("Invalid discovery parameters");
+		return BTP_STATUS_FAILED;
+	}
+	le_scan_param.interval = cp->interval;
+	le_scan_param.window = cp->window;
+	return BTP_STATUS_SUCCESS;
+}
+
 static uint8_t start_discovery(const void *cmd, uint16_t cmd_len,
 			       void *rsp, uint16_t *rsp_len)
 {
@@ -1199,9 +1220,12 @@ static uint8_t start_discovery(const void *cmd, uint16_t cmd_len,
 	}
 
 	/* Start LE scanning */
-	if (bt_le_scan_start(cp->flags & BTP_GAP_DISCOVERY_FLAG_LE_ACTIVE_SCAN ?
-			     BT_LE_SCAN_ACTIVE : BT_LE_SCAN_PASSIVE,
-			     device_found) < 0) {
+	if (cp->flags & BTP_GAP_DISCOVERY_FLAG_LE_ACTIVE_SCAN) {
+		le_scan_param.type = BT_LE_SCAN_TYPE_ACTIVE;
+	} else {
+		le_scan_param.type = BT_LE_SCAN_TYPE_PASSIVE;
+	}
+	if (bt_le_scan_start(&le_scan_param, device_found) < 0) {
 		LOG_ERR("Failed to start scanning");
 		return BTP_STATUS_FAILED;
 	}
@@ -2235,6 +2259,11 @@ static const struct btp_handler handlers[] = {
 		.opcode = BTP_GAP_STOP_ADVERTISING,
 		.expect_len = 0,
 		.func = stop_advertising,
+	},
+	{
+		.opcode = BTP_GAP_SET_DISCOVERY_PARAMS,
+		.expect_len = sizeof(struct btp_gap_set_discovery_params_cmd),
+		.func = set_discovery_params,
 	},
 	{
 		.opcode = BTP_GAP_START_DISCOVERY,
